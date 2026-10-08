@@ -1,0 +1,7 @@
+STMS Assignment Test File
+
+Student: Shiva
+Assignment: Java OOP Assignment
+Purpose: Testing assignment file upload.
+
+This is a small test file for the Student Training Management System.
