@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -41,22 +42,29 @@ public class SecurityConfig {
             HttpSecurity http) throws Exception {
 
         http
+
+            // ==========================================
+            // CSRF
+            // ==========================================
+
             .csrf(csrf -> csrf.disable())
 
             // ==========================================
             // CORS
             // ==========================================
 
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .cors(cors -> cors.configurationSource(
+                    corsConfigurationSource()
+            ))
 
             // ==========================================
             // SESSION MANAGEMENT
             // ==========================================
 
             .sessionManagement(session ->
-                session.sessionCreationPolicy(
-                    SessionCreationPolicy.STATELESS
-                )
+                    session.sessionCreationPolicy(
+                            SessionCreationPolicy.STATELESS
+                    )
             )
 
             // ==========================================
@@ -65,223 +73,235 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
 
-                // ==========================================
-                // PUBLIC
-                // ==========================================
+                    // ==========================================
+                    // CORS PREFLIGHT
+                    // ==========================================
 
-                .requestMatchers(
-                    "/",
-                    "/api/auth/**",
-                    "/error"
-                ).permitAll()
+                    .requestMatchers(
+                            HttpMethod.OPTIONS,
+                            "/**"
+                    ).permitAll()
 
-                // ==========================================
-                // USER MANAGEMENT
-                // ==========================================
+                    // ==========================================
+                    // PUBLIC
+                    // ==========================================
 
-                .requestMatchers("/user/**")
-                .hasAnyAuthority(
-                    "ADMIN",
-                    "ROLE_ADMIN"
-                )
+                    .requestMatchers(
+                            "/",
+                            "/api/auth/**",
+                            "/error"
+                    ).permitAll()
 
-                // ==========================================
-                // STUDENTS
-                // ==========================================
+                    // ==========================================
+                    // USER MANAGEMENT
+                    // ==========================================
 
-                .requestMatchers("/api/students/**")
-                .hasAnyAuthority(
-                    "STUDENT",
-                    "ROLE_STUDENT",
-                    "TRAINER",
-                    "ROLE_TRAINER",
-                    "ADMIN",
-                    "ROLE_ADMIN"
-                )
+                    .requestMatchers(
+                            "/user/**",
+                            "/api/user/**"
+                    )
+                    .hasAnyAuthority(
+                            "ADMIN",
+                            "ROLE_ADMIN"
+                    )
 
-                // ==========================================
-                // TRAINERS
-                // ==========================================
+                    // ==========================================
+                    // STUDENTS
+                    // ==========================================
 
-                .requestMatchers("/api/trainers/**")
-                .hasAnyAuthority(
-                    "TRAINER",
-                    "ROLE_TRAINER",
-                    "ADMIN",
-                    "ROLE_ADMIN"
-                )
+                    .requestMatchers("/api/students/**")
+                    .hasAnyAuthority(
+                            "STUDENT",
+                            "ROLE_STUDENT",
+                            "TRAINER",
+                            "ROLE_TRAINER",
+                            "ADMIN",
+                            "ROLE_ADMIN"
+                    )
 
-                // ==========================================
-                // ADMIN
-                // ==========================================
+                    // ==========================================
+                    // TRAINERS
+                    // ==========================================
 
-                .requestMatchers("/api/admin/**")
-                .hasAnyAuthority(
-                    "ADMIN",
-                    "ROLE_ADMIN"
-                )
+                    .requestMatchers("/api/trainers/**")
+                    .hasAnyAuthority(
+                            "TRAINER",
+                            "ROLE_TRAINER",
+                            "ADMIN",
+                            "ROLE_ADMIN"
+                    )
 
-                // ==========================================
-                // TRAINING PROGRAMS
-                // ==========================================
+                    // ==========================================
+                    // ADMIN
+                    // ==========================================
 
-                .requestMatchers("/training-programs/**")
-                .hasAnyAuthority(
-                    "STUDENT",
-                    "ROLE_STUDENT",
-                    "TRAINER",
-                    "ROLE_TRAINER",
-                    "ADMIN",
-                    "ROLE_ADMIN"
-                )
+                    .requestMatchers("/api/admin/**")
+                    .hasAnyAuthority(
+                            "ADMIN",
+                            "ROLE_ADMIN"
+                    )
 
-                .requestMatchers("/api/training-programs/**")
-                .hasAnyAuthority(
-                    "STUDENT",
-                    "ROLE_STUDENT",
-                    "TRAINER",
-                    "ROLE_TRAINER",
-                    "ADMIN",
-                    "ROLE_ADMIN"
-                )
+                    // ==========================================
+                    // TRAINING PROGRAMS
+                    // ==========================================
 
-                // ==========================================
-                // TRAINING MODULES
-                // ==========================================
+                    .requestMatchers("/training-programs/**")
+                    .hasAnyAuthority(
+                            "STUDENT",
+                            "ROLE_STUDENT",
+                            "TRAINER",
+                            "ROLE_TRAINER",
+                            "ADMIN",
+                            "ROLE_ADMIN"
+                    )
 
-                .requestMatchers("/training-modules/**")
-                .hasAnyAuthority(
-                    "STUDENT",
-                    "ROLE_STUDENT",
-                    "TRAINER",
-                    "ROLE_TRAINER",
-                    "ADMIN",
-                    "ROLE_ADMIN"
-                )
+                    .requestMatchers("/api/training-programs/**")
+                    .hasAnyAuthority(
+                            "STUDENT",
+                            "ROLE_STUDENT",
+                            "TRAINER",
+                            "ROLE_TRAINER",
+                            "ADMIN",
+                            "ROLE_ADMIN"
+                    )
 
-                .requestMatchers("/api/training-modules/**")
-                .hasAnyAuthority(
-                    "STUDENT",
-                    "ROLE_STUDENT",
-                    "TRAINER",
-                    "ROLE_TRAINER",
-                    "ADMIN",
-                    "ROLE_ADMIN"
-                )
+                    // ==========================================
+                    // TRAINING MODULES
+                    // ==========================================
 
-                // ==========================================
-                // ASSESSMENTS
-                // ==========================================
+                    .requestMatchers("/training-modules/**")
+                    .hasAnyAuthority(
+                            "STUDENT",
+                            "ROLE_STUDENT",
+                            "TRAINER",
+                            "ROLE_TRAINER",
+                            "ADMIN",
+                            "ROLE_ADMIN"
+                    )
 
-                .requestMatchers("/api/assessments/**")
-                .hasAnyAuthority(
-                    "STUDENT",
-                    "ROLE_STUDENT",
-                    "TRAINER",
-                    "ROLE_TRAINER",
-                    "ADMIN",
-                    "ROLE_ADMIN"
-                )
+                    .requestMatchers("/api/training-modules/**")
+                    .hasAnyAuthority(
+                            "STUDENT",
+                            "ROLE_STUDENT",
+                            "TRAINER",
+                            "ROLE_TRAINER",
+                            "ADMIN",
+                            "ROLE_ADMIN"
+                    )
 
-                // ==========================================
-                // QUESTIONS
-                // ==========================================
+                    // ==========================================
+                    // ASSESSMENTS
+                    // ==========================================
 
-                .requestMatchers("/api/questions/**")
-                .hasAnyAuthority(
-                    "STUDENT",
-                    "ROLE_STUDENT",
-                    "TRAINER",
-                    "ROLE_TRAINER",
-                    "ADMIN",
-                    "ROLE_ADMIN"
-                )
+                    .requestMatchers("/api/assessments/**")
+                    .hasAnyAuthority(
+                            "STUDENT",
+                            "ROLE_STUDENT",
+                            "TRAINER",
+                            "ROLE_TRAINER",
+                            "ADMIN",
+                            "ROLE_ADMIN"
+                    )
 
-                // ==========================================
-                // RESULTS
-                // ==========================================
+                    // ==========================================
+                    // QUESTIONS
+                    // ==========================================
 
-                .requestMatchers("/api/results/**")
-                .hasAnyAuthority(
-                    "STUDENT",
-                    "ROLE_STUDENT",
-                    "TRAINER",
-                    "ROLE_TRAINER",
-                    "ADMIN",
-                    "ROLE_ADMIN"
-                )
+                    .requestMatchers("/api/questions/**")
+                    .hasAnyAuthority(
+                            "STUDENT",
+                            "ROLE_STUDENT",
+                            "TRAINER",
+                            "ROLE_TRAINER",
+                            "ADMIN",
+                            "ROLE_ADMIN"
+                    )
 
-                // ==========================================
-                // ASSIGNMENTS
-                // ==========================================
+                    // ==========================================
+                    // RESULTS
+                    // ==========================================
 
-                .requestMatchers("/api/assignments/**")
-                .hasAnyAuthority(
-                    "STUDENT",
-                    "ROLE_STUDENT",
-                    "TRAINER",
-                    "ROLE_TRAINER",
-                    "ADMIN",
-                    "ROLE_ADMIN"
-                )
+                    .requestMatchers("/api/results/**")
+                    .hasAnyAuthority(
+                            "STUDENT",
+                            "ROLE_STUDENT",
+                            "TRAINER",
+                            "ROLE_TRAINER",
+                            "ADMIN",
+                            "ROLE_ADMIN"
+                    )
 
-                // ==========================================
-                // ASSIGNMENT SUBMISSIONS
-                // ==========================================
+                    // ==========================================
+                    // ASSIGNMENTS
+                    // ==========================================
 
-                .requestMatchers("/api/assignment-submissions/**")
-                .hasAnyAuthority(
-                    "STUDENT",
-                    "ROLE_STUDENT",
-                    "TRAINER",
-                    "ROLE_TRAINER",
-                    "ADMIN",
-                    "ROLE_ADMIN"
-                )
+                    .requestMatchers("/api/assignments/**")
+                    .hasAnyAuthority(
+                            "STUDENT",
+                            "ROLE_STUDENT",
+                            "TRAINER",
+                            "ROLE_TRAINER",
+                            "ADMIN",
+                            "ROLE_ADMIN"
+                    )
 
-                // ==========================================
-                // ATTENDANCE
-                // ==========================================
+                    // ==========================================
+                    // ASSIGNMENT SUBMISSIONS
+                    // ==========================================
 
-                .requestMatchers("/api/attendance/**")
-                .hasAnyAuthority(
-                    "STUDENT",
-                    "ROLE_STUDENT",
-                    "TRAINER",
-                    "ROLE_TRAINER",
-                    "ADMIN",
-                    "ROLE_ADMIN"
-                )
+                    .requestMatchers("/api/assignment-submissions/**")
+                    .hasAnyAuthority(
+                            "STUDENT",
+                            "ROLE_STUDENT",
+                            "TRAINER",
+                            "ROLE_TRAINER",
+                            "ADMIN",
+                            "ROLE_ADMIN"
+                    )
 
-                // ==========================================
-                // ENROLLMENTS
-                // ==========================================
+                    // ==========================================
+                    // ATTENDANCE
+                    // ==========================================
 
-                .requestMatchers("/api/enrollments/**")
-                .hasAnyAuthority(
-                    "STUDENT",
-                    "ROLE_STUDENT",
-                    "TRAINER",
-                    "ROLE_TRAINER",
-                    "ADMIN",
-                    "ROLE_ADMIN"
-                )
+                    .requestMatchers("/api/attendance/**")
+                    .hasAnyAuthority(
+                            "STUDENT",
+                            "ROLE_STUDENT",
+                            "TRAINER",
+                            "ROLE_TRAINER",
+                            "ADMIN",
+                            "ROLE_ADMIN"
+                    )
 
-                .requestMatchers("/enrollments/**")
-                .hasAnyAuthority(
-                    "STUDENT",
-                    "ROLE_STUDENT",
-                    "TRAINER",
-                    "ROLE_TRAINER",
-                    "ADMIN",
-                    "ROLE_ADMIN"
-                )
+                    // ==========================================
+                    // ENROLLMENTS
+                    // ==========================================
 
-                // ==========================================
-                // ANY OTHER REQUEST
-                // ==========================================
+                    .requestMatchers("/api/enrollments/**")
+                    .hasAnyAuthority(
+                            "STUDENT",
+                            "ROLE_STUDENT",
+                            "TRAINER",
+                            "ROLE_TRAINER",
+                            "ADMIN",
+                            "ROLE_ADMIN"
+                    )
 
-                .anyRequest().authenticated()
+                    .requestMatchers("/enrollments/**")
+                    .hasAnyAuthority(
+                            "STUDENT",
+                            "ROLE_STUDENT",
+                            "TRAINER",
+                            "ROLE_TRAINER",
+                            "ADMIN",
+                            "ROLE_ADMIN"
+                    )
+
+                    // ==========================================
+                    // ANY OTHER REQUEST
+                    // ==========================================
+
+                    .anyRequest().authenticated()
             )
 
             // ==========================================
@@ -289,8 +309,8 @@ public class SecurityConfig {
             // ==========================================
 
             .addFilterBefore(
-                jwtAuthenticationFilter,
-                UsernamePasswordAuthenticationFilter.class
+                    jwtAuthenticationFilter,
+                    UsernamePasswordAuthenticationFilter.class
             );
 
         return http.build();
@@ -303,31 +323,73 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
-        CorsConfiguration configuration = new CorsConfiguration();
+        CorsConfiguration configuration =
+                new CorsConfiguration();
+
+        // ==========================================
+        // ALLOWED FRONTENDS
+        // ==========================================
 
         configuration.setAllowedOrigins(List.of(
-            "http://localhost:5173",
-            "https://stms-frontend-2xe4.onrender.com"
+                "http://localhost:5173",
+                "https://stms-frontend-2xe4.onrender.com"
         ));
+
+        // ==========================================
+        // ALLOWED METHODS
+        // ==========================================
 
         configuration.setAllowedMethods(List.of(
-            "GET",
-            "POST",
-            "PUT",
-            "DELETE",
-            "OPTIONS"
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH",
+                "OPTIONS"
         ));
 
-        configuration.setAllowedHeaders(List.of("*"));
+        // ==========================================
+        // ALLOWED HEADERS
+        // ==========================================
+
+        configuration.setAllowedHeaders(List.of(
+                "Authorization",
+                "Content-Type",
+                "Accept",
+                "Origin",
+                "X-Requested-With"
+        ));
+
+        // ==========================================
+        // EXPOSED HEADERS
+        // ==========================================
+
+        configuration.setExposedHeaders(List.of(
+                "Authorization"
+        ));
+
+        // ==========================================
+        // CREDENTIALS
+        // ==========================================
 
         configuration.setAllowCredentials(true);
 
+        // ==========================================
+        // PREFLIGHT CACHE
+        // ==========================================
+
+        configuration.setMaxAge(3600L);
+
+        // ==========================================
+        // REGISTER CORS CONFIGURATION
+        // ==========================================
+
         UrlBasedCorsConfigurationSource source =
-            new UrlBasedCorsConfigurationSource();
+                new UrlBasedCorsConfigurationSource();
 
         source.registerCorsConfiguration(
-            "/**",
-            configuration
+                "/**",
+                configuration
         );
 
         return source;
