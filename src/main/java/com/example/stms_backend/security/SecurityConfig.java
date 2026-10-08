@@ -11,6 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 public class SecurityConfig {
@@ -41,14 +43,20 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
 
-            .cors(cors -> cors.configurationSource(
-                    request -> corsConfiguration()
-            ))
+            // ==========================================
+            // CORS
+            // ==========================================
+
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
+            // ==========================================
+            // SESSION MANAGEMENT
+            // ==========================================
 
             .sessionManagement(session ->
-                    session.sessionCreationPolicy(
-                            SessionCreationPolicy.STATELESS
-                    )
+                session.sessionCreationPolicy(
+                    SessionCreationPolicy.STATELESS
+                )
             )
 
             // ==========================================
@@ -62,9 +70,9 @@ public class SecurityConfig {
                 // ==========================================
 
                 .requestMatchers(
-                        "/",
-                        "/api/auth/**",
-                        "/error"
+                    "/",
+                    "/api/auth/**",
+                    "/error"
                 ).permitAll()
 
                 // ==========================================
@@ -73,8 +81,8 @@ public class SecurityConfig {
 
                 .requestMatchers("/user/**")
                 .hasAnyAuthority(
-                        "ADMIN",
-                        "ROLE_ADMIN"
+                    "ADMIN",
+                    "ROLE_ADMIN"
                 )
 
                 // ==========================================
@@ -83,12 +91,12 @@ public class SecurityConfig {
 
                 .requestMatchers("/api/students/**")
                 .hasAnyAuthority(
-                        "STUDENT",
-                        "ROLE_STUDENT",
-                        "TRAINER",
-                        "ROLE_TRAINER",
-                        "ADMIN",
-                        "ROLE_ADMIN"
+                    "STUDENT",
+                    "ROLE_STUDENT",
+                    "TRAINER",
+                    "ROLE_TRAINER",
+                    "ADMIN",
+                    "ROLE_ADMIN"
                 )
 
                 // ==========================================
@@ -97,10 +105,10 @@ public class SecurityConfig {
 
                 .requestMatchers("/api/trainers/**")
                 .hasAnyAuthority(
-                        "TRAINER",
-                        "ROLE_TRAINER",
-                        "ADMIN",
-                        "ROLE_ADMIN"
+                    "TRAINER",
+                    "ROLE_TRAINER",
+                    "ADMIN",
+                    "ROLE_ADMIN"
                 )
 
                 // ==========================================
@@ -109,8 +117,8 @@ public class SecurityConfig {
 
                 .requestMatchers("/api/admin/**")
                 .hasAnyAuthority(
-                        "ADMIN",
-                        "ROLE_ADMIN"
+                    "ADMIN",
+                    "ROLE_ADMIN"
                 )
 
                 // ==========================================
@@ -119,22 +127,22 @@ public class SecurityConfig {
 
                 .requestMatchers("/training-programs/**")
                 .hasAnyAuthority(
-                        "STUDENT",
-                        "ROLE_STUDENT",
-                        "TRAINER",
-                        "ROLE_TRAINER",
-                        "ADMIN",
-                        "ROLE_ADMIN"
+                    "STUDENT",
+                    "ROLE_STUDENT",
+                    "TRAINER",
+                    "ROLE_TRAINER",
+                    "ADMIN",
+                    "ROLE_ADMIN"
                 )
 
                 .requestMatchers("/api/training-programs/**")
                 .hasAnyAuthority(
-                        "STUDENT",
-                        "ROLE_STUDENT",
-                        "TRAINER",
-                        "ROLE_TRAINER",
-                        "ADMIN",
-                        "ROLE_ADMIN"
+                    "STUDENT",
+                    "ROLE_STUDENT",
+                    "TRAINER",
+                    "ROLE_TRAINER",
+                    "ADMIN",
+                    "ROLE_ADMIN"
                 )
 
                 // ==========================================
@@ -143,22 +151,22 @@ public class SecurityConfig {
 
                 .requestMatchers("/training-modules/**")
                 .hasAnyAuthority(
-                        "STUDENT",
-                        "ROLE_STUDENT",
-                        "TRAINER",
-                        "ROLE_TRAINER",
-                        "ADMIN",
-                        "ROLE_ADMIN"
+                    "STUDENT",
+                    "ROLE_STUDENT",
+                    "TRAINER",
+                    "ROLE_TRAINER",
+                    "ADMIN",
+                    "ROLE_ADMIN"
                 )
 
                 .requestMatchers("/api/training-modules/**")
                 .hasAnyAuthority(
-                        "STUDENT",
-                        "ROLE_STUDENT",
-                        "TRAINER",
-                        "ROLE_TRAINER",
-                        "ADMIN",
-                        "ROLE_ADMIN"
+                    "STUDENT",
+                    "ROLE_STUDENT",
+                    "TRAINER",
+                    "ROLE_TRAINER",
+                    "ADMIN",
+                    "ROLE_ADMIN"
                 )
 
                 // ==========================================
@@ -167,12 +175,12 @@ public class SecurityConfig {
 
                 .requestMatchers("/api/assessments/**")
                 .hasAnyAuthority(
-                        "STUDENT",
-                        "ROLE_STUDENT",
-                        "TRAINER",
-                        "ROLE_TRAINER",
-                        "ADMIN",
-                        "ROLE_ADMIN"
+                    "STUDENT",
+                    "ROLE_STUDENT",
+                    "TRAINER",
+                    "ROLE_TRAINER",
+                    "ADMIN",
+                    "ROLE_ADMIN"
                 )
 
                 // ==========================================
@@ -181,12 +189,12 @@ public class SecurityConfig {
 
                 .requestMatchers("/api/questions/**")
                 .hasAnyAuthority(
-                        "STUDENT",
-                        "ROLE_STUDENT",
-                        "TRAINER",
-                        "ROLE_TRAINER",
-                        "ADMIN",
-                        "ROLE_ADMIN"
+                    "STUDENT",
+                    "ROLE_STUDENT",
+                    "TRAINER",
+                    "ROLE_TRAINER",
+                    "ADMIN",
+                    "ROLE_ADMIN"
                 )
 
                 // ==========================================
@@ -195,12 +203,12 @@ public class SecurityConfig {
 
                 .requestMatchers("/api/results/**")
                 .hasAnyAuthority(
-                        "STUDENT",
-                        "ROLE_STUDENT",
-                        "TRAINER",
-                        "ROLE_TRAINER",
-                        "ADMIN",
-                        "ROLE_ADMIN"
+                    "STUDENT",
+                    "ROLE_STUDENT",
+                    "TRAINER",
+                    "ROLE_TRAINER",
+                    "ADMIN",
+                    "ROLE_ADMIN"
                 )
 
                 // ==========================================
@@ -209,12 +217,12 @@ public class SecurityConfig {
 
                 .requestMatchers("/api/assignments/**")
                 .hasAnyAuthority(
-                        "STUDENT",
-                        "ROLE_STUDENT",
-                        "TRAINER",
-                        "ROLE_TRAINER",
-                        "ADMIN",
-                        "ROLE_ADMIN"
+                    "STUDENT",
+                    "ROLE_STUDENT",
+                    "TRAINER",
+                    "ROLE_TRAINER",
+                    "ADMIN",
+                    "ROLE_ADMIN"
                 )
 
                 // ==========================================
@@ -223,12 +231,12 @@ public class SecurityConfig {
 
                 .requestMatchers("/api/assignment-submissions/**")
                 .hasAnyAuthority(
-                        "STUDENT",
-                        "ROLE_STUDENT",
-                        "TRAINER",
-                        "ROLE_TRAINER",
-                        "ADMIN",
-                        "ROLE_ADMIN"
+                    "STUDENT",
+                    "ROLE_STUDENT",
+                    "TRAINER",
+                    "ROLE_TRAINER",
+                    "ADMIN",
+                    "ROLE_ADMIN"
                 )
 
                 // ==========================================
@@ -237,12 +245,12 @@ public class SecurityConfig {
 
                 .requestMatchers("/api/attendance/**")
                 .hasAnyAuthority(
-                        "STUDENT",
-                        "ROLE_STUDENT",
-                        "TRAINER",
-                        "ROLE_TRAINER",
-                        "ADMIN",
-                        "ROLE_ADMIN"
+                    "STUDENT",
+                    "ROLE_STUDENT",
+                    "TRAINER",
+                    "ROLE_TRAINER",
+                    "ADMIN",
+                    "ROLE_ADMIN"
                 )
 
                 // ==========================================
@@ -251,22 +259,22 @@ public class SecurityConfig {
 
                 .requestMatchers("/api/enrollments/**")
                 .hasAnyAuthority(
-                        "STUDENT",
-                        "ROLE_STUDENT",
-                        "TRAINER",
-                        "ROLE_TRAINER",
-                        "ADMIN",
-                        "ROLE_ADMIN"
+                    "STUDENT",
+                    "ROLE_STUDENT",
+                    "TRAINER",
+                    "ROLE_TRAINER",
+                    "ADMIN",
+                    "ROLE_ADMIN"
                 )
 
                 .requestMatchers("/enrollments/**")
                 .hasAnyAuthority(
-                        "STUDENT",
-                        "ROLE_STUDENT",
-                        "TRAINER",
-                        "ROLE_TRAINER",
-                        "ADMIN",
-                        "ROLE_ADMIN"
+                    "STUDENT",
+                    "ROLE_STUDENT",
+                    "TRAINER",
+                    "ROLE_TRAINER",
+                    "ADMIN",
+                    "ROLE_ADMIN"
                 )
 
                 // ==========================================
@@ -281,8 +289,8 @@ public class SecurityConfig {
             // ==========================================
 
             .addFilterBefore(
-                    jwtAuthenticationFilter,
-                    UsernamePasswordAuthenticationFilter.class
+                jwtAuthenticationFilter,
+                UsernamePasswordAuthenticationFilter.class
             );
 
         return http.build();
@@ -293,31 +301,35 @@ public class SecurityConfig {
     // ==========================================
 
     @Bean
-    public CorsConfiguration corsConfiguration() {
+    public CorsConfigurationSource corsConfigurationSource() {
 
-        CorsConfiguration configuration =
-                new CorsConfiguration();
+        CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(
-                List.of("http://localhost:5173")
-        );
+        configuration.setAllowedOrigins(List.of(
+            "http://localhost:5173",
+            "https://stms-frontend-2xe4.onrender.com"
+        ));
 
-        configuration.setAllowedMethods(
-                List.of(
-                        "GET",
-                        "POST",
-                        "PUT",
-                        "DELETE",
-                        "OPTIONS"
-                )
-        );
+        configuration.setAllowedMethods(List.of(
+            "GET",
+            "POST",
+            "PUT",
+            "DELETE",
+            "OPTIONS"
+        ));
 
-        configuration.setAllowedHeaders(
-                List.of("*")
-        );
+        configuration.setAllowedHeaders(List.of("*"));
 
         configuration.setAllowCredentials(true);
 
-        return configuration;
+        UrlBasedCorsConfigurationSource source =
+            new UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration(
+            "/**",
+            configuration
+        );
+
+        return source;
     }
 }
