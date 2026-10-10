@@ -1,4 +1,7 @@
+
 package com.example.stms_backend.service;
+
+import java.util.Locale;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,41 +40,39 @@ public class AuthService {
             throw new RuntimeException("Email already registered");
         }
 
+        if (request.getRole() == null
+                || request.getRole().trim().isEmpty()) {
+            throw new RuntimeException("Please select a registration role");
+        }
+
+        String role = request.getRole()
+                .trim()
+                .toUpperCase(Locale.ROOT);
+
+        if (!role.equals("STUDENT") && !role.equals("TRAINER")) {
+            throw new RuntimeException(
+                    "Registration is allowed for Student and Trainer accounts only"
+            );
+        }
+
         User user = new User();
 
         user.setName(request.getName());
         user.setEmail(request.getEmail());
-
         user.setPassword(
                 passwordEncoder.encode(request.getPassword())
         );
-
-        user.setRole(request.getRole().toUpperCase());
+        user.setRole(role);
 
         User savedUser = userRepository.save(user);
 
-        /*
-         * Automatically create a Student profile
-         * for every STUDENT account.
-         */
         if ("STUDENT".equals(savedUser.getRole())) {
 
             Student student = new Student();
 
             student.setUser(savedUser);
-
-            /*
-             * Automatically generate the next roll number.
-             */
-            student.setRollNumber(
-                    generateNextRollNumber()
-            );
-
-            /*
-             * Default department for newly registered students.
-             */
+            student.setRollNumber(generateNextRollNumber());
             student.setDepartment("AI");
-
             student.setYear(2026);
             student.setPhone("");
             student.setAddress("");
@@ -83,18 +84,9 @@ public class AuthService {
         return savedUser;
     }
 
-    /*
-     * Generate the next student roll number.
-     *
-     * Example:
-     * 23eg111a11
-     * 23eg111a12
-     * 23eg111a13
-     */
     private String generateNextRollNumber() {
 
         long studentCount = studentRepository.count();
-
         long nextNumber = studentCount + 1;
 
         return String.format(
